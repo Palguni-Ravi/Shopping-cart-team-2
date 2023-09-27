@@ -6,6 +6,9 @@ import { User } from '../models/user.model';
 import { CookieService } from 'ngx-cookie-service';
 import { CartService } from '../service/cart.service';
 import { CartItem } from '../models/cartItem.model';
+import { MatDialog } from '@angular/material/dialog';
+import { AddAdminDialogComponent } from '../add-admin-dialog/add-admin-dialog.component';
+import { AddProductDialogComponent } from '../add-product-dialog/add-product-dialog.component';
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
@@ -18,7 +21,8 @@ export class SignInComponent implements OnInit {
     private authService: AuthService,
     private cookieService: CookieService,
     private route: ActivatedRoute,
-    private cartService: CartService
+    private cartService: CartService,
+    private dialog: MatDialog
   ) { }
   isRegisterMode: boolean = false;
   loginForm: any;
@@ -30,6 +34,7 @@ export class SignInComponent implements OnInit {
   isUser: boolean = false;
   cartItem : CartItem[]=[]
   userPresent: boolean = this.cookieService.get('currentUser') ? true : false;
+  userRole: string | undefined;
 
   ngOnInit() {
     this.userPresent = this.cookieService.get('currentUser') ? true : false;
@@ -124,8 +129,52 @@ export class SignInComponent implements OnInit {
         this.loginValidation = "User doesn't exist";
       }
     }
+    
+
+    if (this.cookieService.get('currentUser')) {
+      // Check the user's role
+      const roleResponse: any = await this.authService
+        .getUserRole(this.emailId)
+        .toPromise();
+
+      if (roleResponse && roleResponse.role) {
+        this.userRole = roleResponse.role;
+
+        // Redirect or display additional options based on the user's role
+        if (this.userRole === 'SUPER_ADMIN') {
+          // Display options for adding admins and products
+          
+        } else {
+          // Redirect or display regular user options
+        }
+      }
+    }
     this.loginForm.reset();
   }
+
+ 
+  openAdminDialog(): void {
+    const dialogRef = this.dialog.open(AddAdminDialogComponent, {
+      width: '300px',
+      data: {} // You can pass data to the dialog if needed
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // Handle the result from the dialog if needed
+    });
+  }
+
+  openProductDialog(): void {
+    const dialogRef = this.dialog.open(AddProductDialogComponent, {
+      width: '300px',
+      data: {} // You can pass data to the dialog if needed
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // Handle the result from the dialog if needed
+    });
+  }
+
 
   async register(): Promise<void> {
     if (this.loginForm.valid) {

@@ -10,6 +10,7 @@ import com.example.shoppingcart.MongoDb.Service.UserService;
 import com.example.shoppingcart.MongoDb.sercurity.JwtHelper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,6 +113,20 @@ public class AuthController {
 		JwtResponse response = JwtResponse.builder().jwtToken(token).email(userDetails.getUsername()).build();
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
+	
+	@GetMapping("/getUserRole/{email}")
+	public ResponseEntity<String> getUserRole(@PathVariable String email) {
+	    Optional<User> userOptional = userService.getUserRoleByEmail(email);
+	    
+	    if (userOptional.isPresent()) {
+	        User user = userOptional.get();
+	        User.UserRole userRole = user.getRole();
+	        return ResponseEntity.ok(userRole.name());
+	    } else {
+	        return ResponseEntity.notFound().build();
+	    }
+	}
+
 
 	private void doAuthenticate(String email, String password) {
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, password);
@@ -126,4 +141,7 @@ public class AuthController {
 	public String exceptionHandler() {
 		return "Credentials Invalid !!";
 	}
+	
+	
+	
 }

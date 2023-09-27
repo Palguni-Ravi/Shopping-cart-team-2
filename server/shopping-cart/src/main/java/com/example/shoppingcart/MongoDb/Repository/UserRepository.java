@@ -15,4 +15,5 @@ public interface UserRepository extends MongoRepository<User, ObjectId> {
 
 	@Query(value = "{'email': ?0}", fields = "{'name': 1, 'email': 1, 'password': 1, 'cart' : 1}")
 	User findUserCart(String email);
+	
 }

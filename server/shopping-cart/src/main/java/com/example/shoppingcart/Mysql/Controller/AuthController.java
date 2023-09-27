@@ -109,6 +109,7 @@ public class AuthController {
 		JwtResponse response = JwtResponse.builder().jwtToken(token).email(userDetails.getUsername()).build();
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
+	
 
 	private void doAuthenticate(String email, String password) {
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, password);

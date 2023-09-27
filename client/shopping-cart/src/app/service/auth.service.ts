@@ -25,4 +25,10 @@ export class AuthService {
       `${this.baseUrl}` + `/auth/${email}/${password}`
     );
   }
+  getUserRole(email: string): Observable<string> {
+    return this.http.get<string>(
+      `${this.baseUrl}` + `/auth/getUserRole/${email}`
+    );
+  }
+
 }

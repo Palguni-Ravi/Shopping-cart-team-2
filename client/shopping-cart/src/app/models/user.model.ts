@@ -1,9 +1,10 @@
 import { CartItem } from "./cartItem.model"
 export interface User {
-    username?: string,
-    user?: string,
+    email?: string, 
+    name?: string,
     password?: string,
-    isCurrentUser?: boolean,
+    // isCurrentUser?: boolean,
+    role?:string,
     cartItem? : CartItem[]
 }
 
