@@ -26,8 +26,9 @@ export class AuthService {
     );
   }
   getUserRole(email: string): Observable<string> {
-    return this.http.get<string>(
-      `${this.baseUrl}` + `/auth/getUserRole/${email}`
+    return this.http.get(
+      `${this.baseUrl}` + `/auth/getUserRole/${email}`,
+      { responseType: 'text' }
     );
   }
 

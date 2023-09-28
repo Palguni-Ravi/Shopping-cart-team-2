@@ -46,6 +46,10 @@ export class ClothingDataService {
     return this.http.get(`${this.baseUrl}/updateSearch`, { params });
   }
 
+  addProduct(productData: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/addCloth`, productData);
+  }
+
   aggregations$ = this.aggregationsSubject.asObservable();
 
   setAggregations(data: any) {

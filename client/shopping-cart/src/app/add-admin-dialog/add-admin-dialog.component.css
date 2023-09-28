@@ -1,0 +1,30 @@
+/* Add spacing to form elements */
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Adjust the spacing between form elements as needed */
+  }
+.elements{
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Adjust the spacing between form elements as needed */
+}
+  
+  /* Style the pink buttons */
+  .pink-button {
+    background-color: pink;
+    color: black;
+    font-weight: 600;
+    font-size: medium;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  input[type="text"],
+input[type="email"],
+input[type="password"] {
+  height: 30px; /* Adjust the height as needed */
+}
+  

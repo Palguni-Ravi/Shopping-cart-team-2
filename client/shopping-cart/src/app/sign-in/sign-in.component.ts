@@ -34,11 +34,36 @@ export class SignInComponent implements OnInit {
   isUser: boolean = false;
   cartItem : CartItem[]=[]
   userPresent: boolean = this.cookieService.get('currentUser') ? true : false;
-  userRole: string | undefined;
+  userRole: string = "";
+  showAddAdminButton: boolean = false;
+  showAddProductButton: boolean = false;
 
   ngOnInit() {
     this.userPresent = this.cookieService.get('currentUser') ? true : false;
 
+    if ( this.cookieService.get('currentUser')) {
+      // Get the user's emailId from localStorage
+      const emailId = localStorage.getItem("emailId") ?? ""; // Use an empty string if null
+      
+      // Check the user's role
+      this.authService.getUserRole(emailId).subscribe((roleResponse) => {
+        console.log(roleResponse);
+        if (roleResponse) {
+          this.userRole = roleResponse;
+          if (this.userRole === 'SUPER_ADMIN') {
+            this.showAddAdminButton = true;
+            this.showAddProductButton = true;
+          } else if (this.userRole === 'ADMIN') {
+            this.showAddAdminButton = false;
+            this.showAddProductButton = true;
+          } else if (this.userRole === 'ADMIN') {
+            this.showAddAdminButton = false;
+            this.showAddProductButton = false;
+          }
+        }
+      });
+    }
+    
     if (this.userPresent) {
       if (this.cookieService.get('previousState')) {
         this.router.navigate([
@@ -76,6 +101,7 @@ export class SignInComponent implements OnInit {
       this.loginValidation = null;
       this.emailId = this.loginForm.get('email').value;
       let isUser = false;
+      localStorage.setItem("emailId", this.emailId);
       try {
         const response = await this.authService
           .getUserdetails(this.emailId)
@@ -130,25 +156,6 @@ export class SignInComponent implements OnInit {
       }
     }
     
-
-    if (this.cookieService.get('currentUser')) {
-      // Check the user's role
-      const roleResponse: any = await this.authService
-        .getUserRole(this.emailId)
-        .toPromise();
-
-      if (roleResponse && roleResponse.role) {
-        this.userRole = roleResponse.role;
-
-        // Redirect or display additional options based on the user's role
-        if (this.userRole === 'SUPER_ADMIN') {
-          // Display options for adding admins and products
-          
-        } else {
-          // Redirect or display regular user options
-        }
-      }
-    }
     this.loginForm.reset();
   }
 
@@ -156,15 +163,14 @@ export class SignInComponent implements OnInit {
   openAdminDialog(): void {
     const dialogRef = this.dialog.open(AddAdminDialogComponent, {
       width: '300px',
-      data: {} // You can pass data to the dialog if needed
+      data: {} 
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      // Handle the result from the dialog if needed
     });
   }
 
-  openProductDialog(): void {
+  openProductPage(): void {
     const dialogRef = this.dialog.open(AddProductDialogComponent, {
       width: '300px',
       data: {} // You can pass data to the dialog if needed
@@ -198,6 +204,7 @@ export class SignInComponent implements OnInit {
           email: this.loginForm.get('email').value,
           name: this.loginForm.get('name').value,
           password: this.loginForm.get('password').value,
+          role:'USER',
           cartItem: [],
         };
         this.authService
@@ -237,5 +244,19 @@ export class SignInComponent implements OnInit {
   signOut() {
     this.cookieService.delete('currentUser');
     this.userPresent = false;
+    this.userRole = "";
+    this.showAddAdminButton = false;
+    this.showAddProductButton = false;
+    // this.router.navigate(['/']);
   }
 }
+
+
+
+
+
+
+
+
+
+
