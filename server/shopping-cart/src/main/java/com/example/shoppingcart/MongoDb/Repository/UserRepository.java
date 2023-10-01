@@ -15,4 +15,8 @@ public interface UserRepository extends MongoRepository<User, ObjectId> {
 
 	@Query(value = "{'email': ?0}", fields = "{'name': 1, 'email': 1, 'password': 1, 'cart' : 1}")
 	User findUserCart(String email);
+
+	public void save(com.example.shoppingcart.Mysql.Model.User targetUser);
+
+	public Optional<User> findById(int currentSuperadminId);
 }

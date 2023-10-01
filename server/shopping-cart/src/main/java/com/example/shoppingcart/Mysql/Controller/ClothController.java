@@ -4,13 +4,20 @@ import java.util.List;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.shoppingcart.Mysql.Model.Cloth;
 import com.example.shoppingcart.Mysql.Repository.ClothRepository;
+import com.example.shoppingcart.Mysql.Service.ClothService;
 import com.example.shoppingcart.Mysql.Service.ClothingSearchService;
 import com.example.shoppingcart.Mysql.Repository.BrandRepository;
 import com.example.shoppingcart.Mysql.Repository.CategoryRepository;
@@ -18,6 +25,8 @@ import com.example.shoppingcart.Mysql.Repository.GenderRepository;
 import com.example.shoppingcart.Mysql.Model.Brands;
 import com.example.shoppingcart.Mysql.Model.Category;
 import com.example.shoppingcart.Mysql.Model.Gender;
+import com.example.shoppingcart.Mysql.Model.User;
+
 import jakarta.annotation.PostConstruct;
 @RestController
 @RequestMapping("/")
@@ -37,6 +46,8 @@ public class ClothController {
 	private CategoryRepository categoryRepository;
 	@Autowired
 	private GenderRepository genderRepository;
+	@Autowired
+    private ClothService clothService;
 	@PostConstruct
     public void initializeData() {
         clothingSearchService.Indexdata();
@@ -154,4 +165,35 @@ public class ClothController {
 		List<Object> finalSearch = clothingSearchService.performAggregation(addPostFilterQuery, elasticsearchClient);
 		return finalSearch;
 	}
+	
+	@PostMapping
+    @PreAuthorize("hasRole('SUPERADMIN') or hasRole('ADMIN')")
+    public ResponseEntity<String> addCloth(@RequestBody Cloth cloth) {
+        Cloth addedCloth = clothService.addCloth(cloth);
+
+        if (addedCloth != null) {
+            return ResponseEntity.ok("Cloth added successfully.");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to add cloth.");
+        }
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('SUPERADMIN') or hasRole('ADMIN')")
+    public ResponseEntity<String> updateCloth(@PathVariable("id") int id, @RequestBody Cloth cloth) {
+        Cloth updatedCloth = clothService.updateCloth(id, cloth);
+
+        if (updatedCloth != null) {
+            return ResponseEntity.ok("Cloth updated successfully.");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/admins")
+    @PreAuthorize("hasRole('SUPERADMIN')")
+    public ResponseEntity<String> addAdmin(@RequestBody User admin) {
+        // Add admin to the user table logic here
+        return ResponseEntity.ok("Admin added successfully.");
+    }
 }

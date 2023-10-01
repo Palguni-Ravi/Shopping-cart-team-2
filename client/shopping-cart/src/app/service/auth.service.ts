@@ -25,4 +25,12 @@ export class AuthService {
       `${this.baseUrl}` + `/auth/${email}/${password}`
     );
   }
+
+  getUserRole(email: string): Observable<string> {
+    return this.http.get(
+      `${this.baseUrl}` + `/auth/getUserRole/${email}`,
+      { responseType: 'text' }
+    );
+  }
+
 }

@@ -1,0 +1,10 @@
+<form (ngSubmit)="addAdmin()">
+    <label for="adminName">Admin Name</label>
+    <input type="text" id="adminName" name="adminName" [(ngModel)]="adminName" required>
+    <label for="adminEmail">Admin Email</label>
+    <input type="email" id="adminEmail" name="adminEmail" [(ngModel)]="adminEmail" required>
+    <label for="adminPassword">Admin Password</label>
+    <input type="password" id="adminPassword" name="adminPassword" [(ngModel)]="adminPassword" required>
+    <button type="submit">Add Admin</button>
+    <button type="button" (click)="cancel()">Cancel</button>
+  </form>

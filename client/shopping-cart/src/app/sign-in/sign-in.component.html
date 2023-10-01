@@ -1,4 +1,4 @@
-<mat-card class="example-card">
+<!-- <mat-card class="example-card">
   <p *ngIf="userPresent">You are already signed in..!</p>
   <button
     mat-raised-button
@@ -11,6 +11,17 @@
   <mat-card-header *ngIf="!userPresent">
     <mat-card-title>{{ isRegisterMode ? "Register" : "Login" }}</mat-card-title>
   </mat-card-header>
+  <div *ngIf="superAdmin">
+    <button mat-raised-button (click)="addAdmin()">Add Admins</button>
+    <button mat-raised-button (click)="addProduct()">Add Product</button>
+    <button mat-raised-button (click)="changeSuperAdmin()">Change superAdmin</button>
+  </div>
+  
+  <div *ngIf="admin && !superAdmin">
+
+    <button mat-raised-button (click)="addProduct()">Add Product</button>
+  </div>
+  
   <mat-card-content *ngIf="!userPresent">
     <form
       class="example-form"
@@ -102,4 +113,171 @@
       {{ isRegisterMode ? "Login" : "Register" }}
     </button>
   </mat-card-actions>
+</mat-card> -->
+<!-- 
+ <br>
+<br>
+<br>
+<mat-card *ngIf="userPresent" class="example-card">
+  <p>Add Admins </p>
+  <button mat-raised-button type="submit" (click)="openAdminDialog()" *ngIf="userRole === 'SUPER_ADMIN'" >
+    Add Admin
+  </button>
 </mat-card>
+<mat-card *ngIf="userPresent" class="example-card">
+   <p >Add New Products</p>
+   <button mat-raised-button type="submit" (click)="openProductPage()" *ngIf="userRole === 'SUPER_ADMIN'|| 'ADMIN'" >
+    Add Product
+  </button>
+</mat-card>
+<mat-card class="example-card">
+  <p *ngIf="userPresent">You are already signed in..!</p>
+  <button mat-raised-button type="submit" (click)="signOut()" *ngIf="userPresent">
+    Sign out
+  </button>
+  <mat-card-header *ngIf="!userPresent">
+    <mat-card-title>{{ isRegisterMode ? "Register" : "Login" }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content *ngIf="!userPresent">
+    <form class="example-form" [formGroup]="loginForm" (ngSubmit)="isRegisterMode ? register() : login()">
+      <div *ngIf="registerValidation && isRegisterMode">
+        {{ registerValidation }}
+      </div>
+      <div *ngIf="loginValidation && !isRegisterMode">
+        {{ loginValidation }}
+      </div>
+      <mat-form-field class="example-full-width" *ngIf="isRegisterMode">
+        <input (input)="inputCheck()" matInput placeholder="Name" formControlName="name" name="name" required
+          autocomplete="off" />
+      </mat-form-field>
+      <div *ngIf="isRegisterMode">
+        <div *ngIf="name.invalid && (name.dirty || name.touched)">
+          <div *ngIf="name.errors.required">Name is required.</div>
+          <div *ngIf="name.errors.pattern">Name must contain only letters.</div>
+        </div>
+      </div>
+      <mat-form-field class="example-full-width">
+        <input (input)="inputCheck()" matInput placeholder="Email" formControlName="email" name="email" type="email"
+          required autocomplete="off" />
+      </mat-form-field>
+      <div *ngIf="email.invalid && (email.dirty || email.touched)">
+        <div *ngIf="
+            loginForm.get('email')!.hasError('required') &&
+            loginForm.get('email')!.touched
+          ">
+          Email is required.
+        </div>
+        <div *ngIf="
+            loginForm.get('email')!.hasError('email') &&
+            loginForm.get('email')!.touched
+          ">
+          Please enter a valid email address.
+        </div>
+      </div>
+      <mat-form-field class="example-full-width">
+        <input (input)="inputCheck()" matInput placeholder="Password" formControlName="password" type="password"
+          name="password" required autocomplete="off" />
+      </mat-form-field>
+      <div *ngIf="password.invalid && (password.dirty || password.touched)">
+        <div *ngIf="password.errors.required">Password is required.</div>
+        <div *ngIf="password.errors.minlength">
+          Password must be at least 8 characters long.
+        </div>
+      </div>
+      <button mat-raised-button type="submit" [disabled]="!loginForm.valid">
+        {{ isRegisterMode ? "Register" : "Login" }}
+      </button>
+    </form>
+  </mat-card-content>
+  <mat-card-actions *ngIf="!userPresent">
+    <h3>{{ isRegisterMode ? "Already a user?" : "New User?" }}</h3>
+    <button mat-stroked-button (click)="isRegisterMode = !isRegisterMode; loginForm.reset()">
+      {{ isRegisterMode ? "Login" : "Register" }}
+    </button>
+  </mat-card-actions>
+</mat-card>
+<br>  -->
+
+
+<br>
+<br>
+<br>
+<mat-card *ngIf="userPresent && userRole === 'SUPERADMIN' " class="example-card">
+  <p>Add Admins </p>
+  <button mat-raised-button type="submit" (click)="openAdminDialog()" *ngIf="userRole === 'SUPERADMIN'" >
+    Add Admin
+  </button>
+</mat-card>
+<mat-card *ngIf="userPresent && (userRole === 'ADMIN'|| userRole=== 'SUPERADMIN')" class="example-card">
+   <p >Add New Products</p>
+   <button mat-raised-button type="submit" (click)="openProductPage()" >
+    Add Product
+  </button>
+</mat-card>
+<mat-card class="example-card">
+  <p *ngIf="userPresent">You are already signed in..!</p>
+  <button mat-raised-button type="submit" (click)="signOut()" *ngIf="userPresent">
+    Sign out
+  </button>
+  <mat-card-header *ngIf="!userPresent">
+    <mat-card-title>{{ isRegisterMode ? "Register" : "Login" }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content *ngIf="!userPresent">
+    <form class="example-form" [formGroup]="loginForm" (ngSubmit)="isRegisterMode ? register() : login()">
+      <div *ngIf="registerValidation && isRegisterMode">
+        {{ registerValidation }}
+      </div>
+      <div *ngIf="loginValidation && !isRegisterMode">
+        {{ loginValidation }}
+      </div>
+      <mat-form-field class="example-full-width" *ngIf="isRegisterMode">
+        <input (input)="inputCheck()" matInput placeholder="Name" formControlName="name" name="name" required
+          autocomplete="off" />
+      </mat-form-field>
+      <div *ngIf="isRegisterMode">
+        <div *ngIf="name.invalid && (name.dirty || name.touched)">
+          <div *ngIf="name.errors.required">Name is required.</div>
+          <div *ngIf="name.errors.pattern">Name must contain only letters.</div>
+        </div>
+      </div>
+      <mat-form-field class="example-full-width">
+        <input (input)="inputCheck()" matInput placeholder="Email" formControlName="email" name="email" type="email"
+          required autocomplete="off" />
+      </mat-form-field>
+      <div *ngIf="email.invalid && (email.dirty || email.touched)">
+        <div *ngIf="
+            loginForm.get('email')!.hasError('required') &&
+            loginForm.get('email')!.touched
+          ">
+          Email is required.
+        </div>
+        <div *ngIf="
+            loginForm.get('email')!.hasError('email') &&
+            loginForm.get('email')!.touched
+          ">
+          Please enter a valid email address.
+        </div>
+      </div>
+      <mat-form-field class="example-full-width">
+        <input (input)="inputCheck()" matInput placeholder="Password" formControlName="password" type="password"
+          name="password" required autocomplete="off" />
+      </mat-form-field>
+      <div *ngIf="password.invalid && (password.dirty || password.touched)">
+        <div *ngIf="password.errors.required">Password is required.</div>
+        <div *ngIf="password.errors.minlength">
+          Password must be at least 8 characters long.
+        </div>
+      </div>
+      <button mat-raised-button type="submit" [disabled]="!loginForm.valid">
+        {{ isRegisterMode ? "Register" : "Login" }}
+      </button>
+    </form>
+  </mat-card-content>
+  <mat-card-actions *ngIf="!userPresent">
+    <h3>{{ isRegisterMode ? "Already a user?" : "New User?" }}</h3>
+    <button mat-stroked-button (click)="isRegisterMode = !isRegisterMode; loginForm.reset()">
+      {{ isRegisterMode ? "Login" : "Register" }}
+    </button>
+  </mat-card-actions>
+</mat-card>
+<br>

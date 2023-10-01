@@ -19,6 +19,9 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { CookieService } from 'ngx-cookie-service';
 import { BreakpointObserverOverviewExampleComponent } from './breakpoint-observer-overview-example/breakpoint-observer-overview-example.component';
+import { AddAdminDialogComponent } from './add-admin-dialog/add-admin-dialog.component';
+import { AddProductDialogComponent } from './add-product-dialog/add-product-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -30,6 +33,8 @@ import { BreakpointObserverOverviewExampleComponent } from './breakpoint-observe
     IndexPageComponent,
     SignInComponent,
     BreakpointObserverOverviewExampleComponent,
+    AddAdminDialogComponent,
+    AddProductDialogComponent,
 
   ],schemas: [CUSTOM_ELEMENTS_SCHEMA],
 
@@ -44,7 +49,8 @@ import { BreakpointObserverOverviewExampleComponent } from './breakpoint-observe
     FormsModule,
     MatSnackBarModule,
     ScrollingModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    MatDialogModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

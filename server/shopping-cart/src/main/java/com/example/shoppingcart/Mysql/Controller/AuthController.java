@@ -8,9 +8,9 @@ import com.example.shoppingcart.Mysql.Repository.CartRepository;
 import com.example.shoppingcart.Mysql.Repository.UserRepository;
 import com.example.shoppingcart.Mysql.Service.UserService;
 import com.example.shoppingcart.Mysql.Security.JwtHelper;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -122,5 +124,18 @@ public class AuthController {
 	@ExceptionHandler(BadCredentialsException.class)
 	public String exceptionHandler() {
 		return "Credentials Invalid!!";
+	}
+	
+	@GetMapping("/getUserRole/{email}")
+	public ResponseEntity<String> getUserRole(@PathVariable String email) {
+	    Optional<User> userOptional = userService.getUserRoleByEmail(email);
+	   
+	    if (userOptional.isPresent()) {
+	        User user = userOptional.get();
+	        User.UserRole userRole = user.getRole();
+	        return ResponseEntity.ok(userRole.name());
+	    } else {
+	        return ResponseEntity.notFound().build();
+	    }
 	}
 }

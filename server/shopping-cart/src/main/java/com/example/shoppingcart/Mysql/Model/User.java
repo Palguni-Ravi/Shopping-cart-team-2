@@ -29,10 +29,21 @@ public class User implements UserDetails {
 
 	@Column
 	private String password;
+	
+	@Column
+	@Enumerated(EnumType.STRING)
+	private UserRole role = UserRole.USER;
+	
+	@Column(name = "is_superadmin")
+    private boolean superadmin = false;
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
 	private Cart cart;
 
+	public enum UserRole {
+	    SUPERADMIN, ADMIN, USER
+	}
+	
 	public Cart getCart() {
 		return cart;
 	}
@@ -47,6 +58,10 @@ public class User implements UserDetails {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public UserRole getRole() {
+		return role;
 	}
 
 	public String getEmail() {
@@ -64,6 +79,14 @@ public class User implements UserDetails {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public boolean isSuperadmin() {
+        return superadmin;
+    }
+
+    public void setSuperadmin(boolean superadmin) {
+        this.superadmin = superadmin;
+    }
 
 	public User(String name, String email, String password) {
 		this.name = name;
@@ -82,6 +105,10 @@ public class User implements UserDetails {
 	@Override
 	public String getUsername() {
 		return this.email;
+	}
+
+	public void setRole(UserRole role) {
+	    this.role = role;
 	}
 
 	@Override
