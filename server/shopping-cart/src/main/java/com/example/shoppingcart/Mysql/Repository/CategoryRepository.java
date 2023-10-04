@@ -8,4 +8,6 @@ import com.example.shoppingcart.Mysql.Model.Category;
 
 @Profile("mysql")
 public interface CategoryRepository extends JpaRepository<Category , Integer>{
+
+	Category findByName(String categoryName);
 }

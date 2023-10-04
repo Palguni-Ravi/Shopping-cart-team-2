@@ -36,6 +36,7 @@ public class Cloth {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "gender")
 	private Gender gender;
+	
 
 	@Column
 	private String color;

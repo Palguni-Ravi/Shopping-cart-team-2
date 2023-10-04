@@ -6,4 +6,7 @@ import com.example.shoppingcart.Mysql.Model.Gender;
 
 @Profile("mysql")
 public interface GenderRepository extends JpaRepository<Gender , Integer>{
+
+	Gender findByName(String genderName);
+
 }

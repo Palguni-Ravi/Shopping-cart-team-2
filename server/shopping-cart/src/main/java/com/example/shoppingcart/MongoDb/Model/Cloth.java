@@ -86,7 +86,4 @@ public int getPincode() {
 public void setPincode(int pincode) {
 	this.pincode = pincode;
 }
-
-  
-
 }

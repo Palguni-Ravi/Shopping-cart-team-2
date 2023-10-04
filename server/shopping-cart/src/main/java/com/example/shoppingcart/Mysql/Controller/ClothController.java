@@ -1,4 +1,5 @@
 package com.example.shoppingcart.Mysql.Controller;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -15,10 +16,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.shoppingcart.Mysql.Model.Cloth;
 import com.example.shoppingcart.Mysql.Repository.ClothRepository;
 import com.example.shoppingcart.Mysql.Service.ClothService;
 import com.example.shoppingcart.Mysql.Service.ClothingSearchService;
+import com.example.shoppingcart.Mysql.Service.CloudinaryImageService;
+
+import co.elastic.clients.elasticsearch.indices.Storage;
+
 import com.example.shoppingcart.Mysql.Repository.BrandRepository;
 import com.example.shoppingcart.Mysql.Repository.CategoryRepository;
 import com.example.shoppingcart.Mysql.Repository.GenderRepository;
@@ -28,6 +35,7 @@ import com.example.shoppingcart.Mysql.Model.Gender;
 import com.example.shoppingcart.Mysql.Model.User;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityNotFoundException;
 @RestController
 @RequestMapping("/")
 @CrossOrigin(origins = "http://localhost:5000")
@@ -39,7 +47,8 @@ public class ClothController {
 	private ClothingSearchService clothingSearchService;
 	@Autowired
 	private RestHighLevelClient elasticsearchClient;
-	
+	@Autowired
+	private CloudinaryImageService cloudinaryImageService;
 	@Autowired
 	private BrandRepository brandRepository;
 	@Autowired
@@ -193,7 +202,74 @@ public class ClothController {
     @PostMapping("/admins")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<String> addAdmin(@RequestBody User admin) {
-        // Add admin to the user table logic here
         return ResponseEntity.ok("Admin added successfully.");
     }
+    
+   
+    @PostMapping("/add")
+  //@PreAuthorize("hasRole('SUPERADMIN') or hasRole('ADMIN')")
+  public ResponseEntity<Object> addCloth(
+      @RequestParam("tag") String tag,
+      @RequestParam("color") String color,
+      @RequestParam("genderName") String genderName,
+      @RequestParam("rating") int rating,
+      @RequestParam("price") int price,
+      @RequestParam("brandName") String brandName,
+      @RequestParam("categoryName") String categoryName,
+      @RequestParam("pincode") int pincode,
+      @RequestParam("image") MultipartFile imageFile) {
+      try {
+    	  String imageUrl = cloudinaryImageService.upload(imageFile);
+          Gender gender = genderRepository.findByName(genderName);
+          if (gender == null) {
+              gender = new Gender();
+              gender.setName(genderName);
+              gender.setImage(imageUrl);
+              genderRepository.save(gender);
+          }
+
+          // Check if brand exists, if not, create a new one
+          Brands brand = brandRepository.findByName(brandName);
+          if (brand == null) {
+              brand = new Brands();
+              brand.setName(brandName);
+              brand.setImage(imageUrl);
+              brandRepository.save(brand);
+          }
+
+          // Check if category exists, if not, create a new one
+          Category category = categoryRepository.findByName(categoryName);
+          if (category == null) {
+              category = new Category();
+              category.setName(categoryName);
+              category.setImage(imageUrl);
+              categoryRepository.save(category);
+          }
+
+          
+          Cloth cloth = new Cloth();
+          cloth.setTag(tag);
+          cloth.setColor(color);
+          cloth.setGender(gender);
+          cloth.setRating(rating);
+          cloth.setPrice(price);
+          cloth.setBrand(brand);
+          cloth.setCategory(category);
+          cloth.setPincode(pincode);
+          cloth.setImage(imageUrl);
+
+          clothRepository.save(cloth);
+
+          return ResponseEntity.ok("Cloth added successfully.");
+      } catch (IOException e) {
+          e.printStackTrace();
+          return ResponseEntity.badRequest().body("Error uploading image.");
+      } catch (Exception e) {
+          e.printStackTrace();
+          return ResponseEntity.badRequest().body("Failed to add cloth.");
+      }
+  }
+
+
+
 }
