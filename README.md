@@ -62,7 +62,7 @@ Note- Currently the database is present in our cluster. If you need to connect t
 
 Follow the following steps:
 * Create a database with name `shopping-cart`
-* Insert the json files of brands, category, gender, clothing attached in the Data folder to the collection with the same name.
+* Insert the json files of brands, category, gender, clothing attached in the extra file to the collection with the same name.
 * Create collections with name as user, carts, cartItems.
 
 # To store data in MySQL
